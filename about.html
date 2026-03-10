@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Tentang • Ruang Pikiran</title>
+    
+    <!-- Google Fonts: Inter & Material Symbols -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" rel="stylesheet" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0e7df;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 0;
+            color: #2c2420;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ========== HEADER ========== */
+        .main-header {
+            background: #fffbf8;
+            border-bottom: 2px dotted #dac8ba;
+            padding: 0.8rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #362d26;
+            text-decoration: none;
+        }
+
+        .logo .material-symbols-outlined {
+            font-size: 1.8rem;
+            color: #b27f62;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            background: #fcf3ec;
+            color: #5f4a3a;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.15s;
+            border: 1px solid #ecdacd;
+        }
+
+        .nav-link:hover {
+            background: #f2e4d9;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: #d4b9a8;
+            color: #2c2420;
+            border-color: #b99a86;
+        }
+
+        .nav-link .material-symbols-outlined {
+            font-size: 1.2rem;
+        }
+
+        /* ========== LANGUAGE SWITCHER (SAMA DENGAN INDEX) ========== */
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #eeded2;
+            padding: 0.2rem;
+            border-radius: 60px;
+            border: 1px solid #dac2b2;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #5f4a3a;
+            cursor: pointer;
+            transition: 0.15s;
+            font-family: 'Inter', sans-serif;
+            width: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .lang-btn.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            color: #2c2420;
+        }
+
+        .lang-btn .material-symbols-outlined {
+            font-size: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .lang-btn {
+                padding: 0.3rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            .lang-btn .material-symbols-outlined {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            flex: 1;
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ========== ABOUT PAGE ========== */
+        .about-container {
+            background: #fffbf8;
+            border-radius: 40px;
+            padding: 2.5rem 2rem;
+            border: 1px solid #ecdacd;
+            box-shadow: 0 20px 40px -20px #3f2e22;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .about-header .material-symbols-outlined {
+            font-size: 4rem;
+            color: #b27f62;
+            background: #fcf3ec;
+            padding: 1rem;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            border: 2px dotted #dac8ba;
+        }
+
+        .about-header h1 {
+            font-size: 2.5rem;
+            font-weight: 500;
+            color: #362d26;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .about-header .subtitle {
+            font-size: 1.1rem;
+            color: #9b8271;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* Language switcher di pojok kanan atas (sama seperti index) */
+        .about-lang-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        @media (max-width: 768px) {
+            .about-lang-wrapper {
+                position: static;
+                display: flex;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+            
+            .about-header {
+                padding-top: 0;
+            }
+        }
+
+        .about-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #4f3e32;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px dotted #dac8ba;
+            padding-bottom: 0.8rem;
+        }
+
+        .section-title .material-symbols-outlined {
+            font-size: 2rem;
+            color: #b27f62;
+        }
+
+        .section-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #5f4a3a;
+        }
+
+        .section-content p {
+            margin-bottom: 1.2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .feature-card {
+            background: #fcf6f0;
+            border-radius: 24px;
+            padding: 1.5rem;
+            border: 1px solid #ecdacd;
+            transition: 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -10px #3f2e22;
+        }
+
+        .feature-icon {
+            background: #fcf3ec;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon .material-symbols-outlined {
+            font-size: 2rem;
+            color: #b27f62;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #362d26;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            color: #7b5f4d;
+            line-height: 1.5;
+        }
+
+        .values-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .values-list li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #edd9cb;
+        }
+
+        .values-list li:last-child {
+            border-bottom: none;
+        }
+
+        .values-list .material-symbols-outlined {
+            font-size: 1.8rem;
+            color: #85aa9b;
+            background: #f0f0e8;
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
+
+        .values-list strong {
+            font-size: 1.1rem;
+            color: #362d26;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        .values-list span {
+            color: #7b5f4d;
+            font-size: 0.95rem;
+        }
+
+        .quote-box {
+            background: #fcf3ec;
+            border-radius: 40px;
+            padding: 2rem;
+            text-align: center;
+            border-left: 6px solid #d4b9a8;
+            margin: 2rem 0;
+        }
+
+        .quote-box .quote {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #4f3e32;
+            margin-bottom: 1rem;
+        }
+
+        .quote-box .author {
+            font-size: 1rem;
+            color: #9b8271;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: #dac8ba;
+        }
+
+        .timeline-item:last-child:before {
+            height: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -2rem;
+            top: 0;
+            width: 1rem;
+            height: 1rem;
+            background: #b27f62;
+            border-radius: 50%;
+            border: 3px solid #fcf6f0;
+        }
+
+        .timeline-year {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #b27f62;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #362d26;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc {
+            color: #7b5f4d;
+            line-height: 1.6;
+        }
+
+        /* Team Section */
+        .team-section {
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto 3rem;
+        }
+
+        .team-member-single {
+            background: #fcf6f0;
+            border-radius: 40px;
+            padding: 2rem;
+            border: 1px solid #ecdacd;
+            transition: 0.2s;
+        }
+
+        .team-member-single:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -15px #3f2e22;
+        }
+
+        .member-avatar-large {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #fcf3ec;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #d4b9a8;
+        }
+
+        .member-avatar-large .material-symbols-outlined {
+            font-size: 5rem;
+            color: #b27f62;
+        }
+
+        .member-name-large {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #362d26;
+            margin-bottom: 0.3rem;
+        }
+
+        .member-role-large {
+            font-size: 1.1rem;
+            color: #9b8271;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px dotted #dac8ba;
+        }
+
+        .member-bio {
+            font-size: 1rem;
+            color: #5f4a3a;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            padding: 0 1rem;
+        }
+
+        .member-social {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #fcf3ec;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6f5645;
+            text-decoration: none;
+            transition: 0.15s;
+            border: 1px solid #ecdacd;
+        }
+
+        .social-icon:hover {
+            background: #d4b9a8;
+            color: #2c2420;
+            transform: translateY(-3px);
+        }
+
+        .contact-info {
+            background: #fcf6f0;
+            border-radius: 24px;
+            padding: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #5f4a3a;
+            text-decoration: none;
+            transition: 0.15s;
+        }
+
+        .contact-item:hover {
+            color: #b27f62;
+            transform: translateY(-2px);
+        }
+
+        .contact-item .material-symbols-outlined {
+            font-size: 1.8rem;
+            color: #b27f62;
+        }
+
+        /* ========== FOOTER ========== */
+        .main-footer {
+            background: #fffbf8;
+            border-top: 2px dotted #dac8ba;
+            padding: 1.5rem 1rem;
+            margin-top: 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: #6f5645;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.15s;
+        }
+
+        .footer-link:hover {
+            color: #b27f62;
+            transform: translateY(-2px);
+        }
+
+        .footer-link .material-symbols-outlined {
+            font-size: 1.2rem;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0.5rem auto 0;
+            padding-top: 1rem;
+            border-top: 2px dotted #dac8ba;
+            text-align: center;
+            color: #9b8271;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #2c2420;
+            color: #fef5ed;
+            padding: 1rem 1.5rem;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 25px rgba(44, 36, 32, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 380px;
+            border-left: 6px solid #ecc9b5;
+            backdrop-filter: blur(5px);
+            background: rgba(44, 36, 32, 0.95);
+            border: 1px solid rgba(236, 201, 181, 0.3);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            background: #ecc9b5;
+            color: #2c2420;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast-icon .material-symbols-outlined {
+            font-size: 1.3rem;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+            color: #ecc9b5;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            .about-container {
+                padding: 1.5rem 1.2rem;
+            }
+
+            .about-header h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .values-list li {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .timeline {
+                padding-left: 1.5rem;
+            }
+            
+            .member-name-large {
+                font-size: 1.5rem;
+            }
+            
+            .toast-container {
+                left: 1rem;
+                right: 1rem;
+                bottom: 1rem;
+            }
+            
+            .toast {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .about-header .material-symbols-outlined {
+                font-size: 3rem;
+            }
+
+            .about-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .member-avatar-large {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .member-avatar-large .material-symbols-outlined {
+                font-size: 4rem;
+            }
+        }
+
+        /* Touch-friendly */
+        input, select, textarea, button {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="main-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="material-symbols-outlined">psychology</span>
+                <span id="headerLogoText">Ruang Pikiran</span>
+            </a>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link">
+                    <span class="material-symbols-outlined">home</span>
+                    <span class="nav-home-text">Beranda</span>
+                </a>
+                <a href="about.html" class="nav-link active">
+                    <span class="material-symbols-outlined">info</span>
+                    <span class="nav-about-text">Tentang</span>
+                </a>
+                <a href="contact.html" class="nav-link">
+                    <span class="material-symbols-outlined">contact_support</span>
+                    <span class="nav-contact-text">Kontak</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="about-container">
+            <!-- Header dengan Language Switcher (sama persis dengan index) -->
+            <div class="about-header">
+                <span class="material-symbols-outlined">psychology_alt</span>
+                <h1 id="aboutTitle">Tentang Ruang Pikiran</h1>
+                <div class="subtitle" id="aboutSubtitle">Ruang pribadi untuk menuangkan isi pikiran, perasaan, dan refleksi harian</div>
+                
+                <!-- Language Switcher di pojok kanan atas (sama seperti index) -->
+                <div class="about-lang-wrapper">
+                    <div class="language-switcher">
+                        <button class="lang-btn active" id="langID" data-lang="id">
+                            <span class="material-symbols-outlined">flag</span>
+                            ID
+                        </button>
+                        <button class="lang-btn" id="langEN" data-lang="en">
+                            <span class="material-symbols-outlined">flag</span>
+                            EN
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cerita Kami / Our Story -->
+            <div class="about-section">
+                <div class="section-title">
+                    <span class="material-symbols-outlined">history</span>
+                    <h2 id="storyTitle">Cerita Kami</h2>
+                </div>
+                <div class="section-content" id="storyContent">
+                    <p>Ruang Pikiran lahir dari kebutuhan sederhana: tempat yang aman untuk menuangkan apa yang ada di kepala. Di tengah kesibukan dan hiruk-pikuk kehidupan, kita sering lupa untuk berhenti sejenak dan mendengarkan diri sendiri.</p>
+                    <p>Aplikasi ini dibuat sebagai ruang pribadi yang hangat dan nyaman, di mana kamu bisa menuliskan cerita harian, mencurahkan isi hati, dan memberikan pesan untuk dirimu sendiri. Tanpa penghakiman, tanpa tekanan, hanya kamu dan pikiranmu.</p>
+                    <p>Kami percaya bahwa menulis adalah bentuk terapi yang sederhana namun powerful. Dengan menuangkan apa yang ada di kepala, kita bisa lebih memahami diri sendiri, melepaskan beban, dan menemukan kejernihan di tengah kekacauan.</p>
+                </div>
+            </div>
+
+            <!-- Quote -->
+            <div class="quote-box">
+                <div class="quote" id="quoteText">"Menulis adalah cara terbaik untuk berbicara tanpa diganggu. Ruang Pikiran adalah tempat di mana suaramu didengar, oleh dirimu sendiri."</div>
+                <div class="author" id="quoteAuthor">— Husni Aljalil</div>
+            </div>
+
+            <!-- Fitur / Features -->
+            <div class="about-section">
+                <div class="section-title">
+                    <span class="material-symbols-outlined">star</span>
+                    <h2 id="featuresTitle">Fitur Utama</h2>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-symbols-outlined">edit_note</span>
+                        </div>
+                        <h3 id="feature1Title">Jurnal Harian</h3>
+                        <p id="feature1Desc">Tulis cerita, pengalaman, dan refleksi harianmu dengan bebas. Tidak ada batasan, tidak ada aturan.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-symbols-outlined">cloud</span>
+                        </div>
+                        <h3 id="feature2Title">Catat Suasana Hati</h3>
+                        <p id="feature2Desc">Rekam bagaimana perasaanmu setiap hari. Lacak pola emosi dan pahami dirimu lebih baik.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-symbols-outlined">psychology_alt</span>
+                        </div>
+                        <h3 id="feature3Title">Isi Kepala</h3>
+                        <p id="feature3Desc">Tuangkan semua pikiran yang memenuhi kepalamu, satu per satu. Beban jadi terasa lebih ringan.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-symbols-outlined">ecg_heart</span>
+                        </div>
+                        <h3 id="feature4Title">Refleksi Diri</h3>
+                        <p id="feature4Desc">Catat hal menyakitkan dan alasan untuk bertahan. Ingatkan dirimu bahwa kamu kuat.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-symbols-outlined">self_improvement</span>
+                        </div>
+                        <h3 id="feature5Title">Pesan untuk Diri</h3>
+                        <p id="feature5Desc">Tinggalkan pesan untuk dirimu sendiri. Afirmasi positif yang bisa kamu baca kapan saja.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-symbols-outlined">content_copy</span>
+                        </div>
+                        <h3 id="feature6Title">Salin Jurnal</h3>
+                        <p id="feature6Desc">Salin semua tulisanmu dengan satu klik. Simpan atau bagikan jika kamu mau.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nilai-nilai / Values -->
+            <div class="about-section">
+                <div class="section-title">
+                    <span class="material-symbols-outlined">favorite</span>
+                    <h2 id="valuesTitle">Nilai-nilai Kami</h2>
+                </div>
+                <ul class="values-list">
+                    <li>
+                        <span class="material-symbols-outlined">lock</span>
+                        <div>
+                            <strong id="value1Title">Privasi</strong>
+                            <span id="value1Desc">Semua tulisanmu disimpan di browsermu sendiri. Kami tidak melihat dan tidak bisa mengaksesnya.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="material-symbols-outlined">self_improvement</span>
+                        <div>
+                            <strong id="value2Title">Tanpa Penghakiman</strong>
+                            <span id="value2Desc">Tidak ada yang benar atau salah di sini. Ruang Pikiran adalah zona bebas penghakiman.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="material-symbols-outlined">heart_check</span>
+                        <div>
+                            <strong id="value3Title">Kesehatan Mental</strong>
+                            <span id="value3Desc">Kami percaya bahwa menulis adalah langkah kecil untuk merawat kesehatan mental.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="material-symbols-outlined">public</span>
+                        <div>
+                            <strong id="value4Title">Akses untuk Semua</strong>
+                            <span id="value4Desc">Gratis dan akan selalu gratis. Kesehatan mental bukanlah hak istimewa.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Timeline Perjalanan / Journey -->
+            <div class="about-section">
+                <div class="section-title">
+                    <span class="material-symbols-outlined">timeline</span>
+                    <h2 id="timelineTitle">Perjalanan Kami</h2>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-year">2023</div>
+                        <div class="timeline-title" id="timeline1Title">Ide Awal</div>
+                        <div class="timeline-desc" id="timeline1Desc">Berawal dari kebutuhan pribadi Husni untuk menuangkan pikiran di tengah kesibukan.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-year">2024</div>
+                        <div class="timeline-title" id="timeline2Title">Prototype</div>
+                        <div class="timeline-desc" id="timeline2Desc">Dibuat dalam bentuk sederhana oleh Husni, hanya untuk penggunaan pribadi.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-year">2025</div>
+                        <div class="timeline-title" id="timeline3Title">Pengembangan</div>
+                        <div class="timeline-desc" id="timeline3Desc">Menambahkan dukungan bahasa Inggris agar bisa diakses lebih luas.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-year">2026</div>
+                        <div class="timeline-title" id="timeline4Title">Ruang Pikiran</div>
+                        <div class="timeline-desc" id="timeline4Desc">Terus berkembang dengan fitur-fitur baru yang ramah pengguna.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tim di Balik Layar / Creator -->
+            <div class="about-section">
+                <div class="section-title">
+                    <span class="material-symbols-outlined">person</span>
+                    <h2 id="creatorTitle">Pencipta</h2>
+                </div>
+                <div class="team-section">
+                    <div class="team-member-single">
+                        <div class="member-avatar-large">
+                            <span class="material-symbols-outlined">face</span>
+                        </div>
+                        <div class="member-name-large">Husni Aljalil</div>
+                        <div class="member-role-large" id="creatorRole">Founder & Pengembang</div>
+                        <div class="member-bio" id="creatorBio">
+                            <p>Husni adalah pengembang dan desainer di balik Ruang Pikiran. Berawal dari kebutuhan pribadi untuk menuangkan pikiran, ia menciptakan ruang yang hangat dan nyaman bagi siapa pun yang ingin merefleksikan diri melalui tulisan.</p>
+                            <p style="margin-top: 1rem;">Dengan latar belakang di bidang teknologi dan kepedulian terhadap kesehatan mental, Husni merancang aplikasi ini agar sederhana, intim, dan bebas penghakiman.</p>
+                        </div>
+                        <div class="member-social">
+                            <a href="#" class="social-icon" aria-label="Email">
+                                <span class="material-symbols-outlined">mail</span>
+                            </a>
+                            <a href="#" class="social-icon" aria-label="GitHub">
+                                <span class="material-symbols-outlined">code</span>
+                            </a>
+                            <a href="#" class="social-icon" aria-label="LinkedIn">
+                                <span class="material-symbols-outlined">work</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kontak / Contact -->
+            <div class="about-section">
+                <div class="section-title">
+                    <span class="material-symbols-outlined">contact_support</span>
+                    <h2 id="contactTitle">Hubungi Kami</h2>
+                </div>
+                <div class="contact-info">
+                    <a href="mailto:husni@ruangpikiran.com" class="contact-item">
+                        <span class="material-symbols-outlined">mail</span>
+                        husni@ruangpikiran.com
+                    </a>
+                    <a href="#" class="contact-item">
+                        <span class="material-symbols-outlined">instagram</span>
+                        @husnialjalil
+                    </a>
+                    <a href="#" class="contact-item">
+                        <span class="material-symbols-outlined">chat</span>
+                        @husnialjalil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="index.html" class="footer-link">
+                    <span class="material-symbols-outlined">home</span>
+                    <span class="footer-home-text">Beranda</span>
+                </a>
+                <a href="about.html" class="footer-link">
+                    <span class="material-symbols-outlined">info</span>
+                    <span class="footer-about-text">Tentang</span>
+                </a>
+                <a href="contact.html" class="footer-link">
+                    <span class="material-symbols-outlined">contact_support</span>
+                    <span class="footer-contact-text">Kontak</span>
+                </a>
+            </div>
+
+            <div class="footer-bottom">
+                <span class="material-symbols-outlined icon-sm">copyright</span>
+                <span id="copyrightYear">2026</span>
+                <span id="footerCopyright">Ruang Pikiran by Husni Aljalil. Hak cipta dilindungi.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // Update copyright year
+        document.getElementById('copyrightYear').textContent = new Date().getFullYear();
+
+        // Toast function
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'success' ? 'check_circle' : 'info';
+            const title = type === 'success' ? 'Berhasil' : 'Info';
+            
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <span class="material-symbols-outlined">${icon}</span>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ========== BILINGUAL FEATURE ==========
+        const translations = {
+            id: {
+                // Header
+                headerLogo: 'Ruang Pikiran',
+                navHome: 'Beranda',
+                navAbout: 'Tentang',
+                navContact: 'Kontak',
+                
+                // About page
+                aboutTitle: 'Tentang Ruang Pikiran',
+                aboutSubtitle: 'Ruang pribadi untuk menuangkan isi pikiran, perasaan, dan refleksi harian',
+                
+                // Story section
+                storyTitle: 'Cerita Kami',
+                storyContent: `
+                    <p>Ruang Pikiran lahir dari kebutuhan sederhana: tempat yang aman untuk menuangkan apa yang ada di kepala. Di tengah kesibukan dan hiruk-pikuk kehidupan, kita sering lupa untuk berhenti sejenak dan mendengarkan diri sendiri.</p>
+                    <p>Aplikasi ini dibuat sebagai ruang pribadi yang hangat dan nyaman, di mana kamu bisa menuliskan cerita harian, mencurahkan isi hati, dan memberikan pesan untuk dirimu sendiri. Tanpa penghakiman, tanpa tekanan, hanya kamu dan pikiranmu.</p>
+                    <p>Kami percaya bahwa menulis adalah bentuk terapi yang sederhana namun powerful. Dengan menuangkan apa yang ada di kepala, kita bisa lebih memahami diri sendiri, melepaskan beban, dan menemukan kejernihan di tengah kekacauan.</p>
+                `,
+                
+                // Quote
+                quoteText: '"Menulis adalah cara terbaik untuk berbicara tanpa diganggu. Ruang Pikiran adalah tempat di mana suaramu didengar, oleh dirimu sendiri."',
+                quoteAuthor: '— Husni Aljalil',
+                
+                // Features
+                featuresTitle: 'Fitur Utama',
+                feature1Title: 'Jurnal Harian',
+                feature1Desc: 'Tulis cerita, pengalaman, dan refleksi harianmu dengan bebas. Tidak ada batasan, tidak ada aturan.',
+                feature2Title: 'Catat Suasana Hati',
+                feature2Desc: 'Rekam bagaimana perasaanmu setiap hari. Lacak pola emosi dan pahami dirimu lebih baik.',
+                feature3Title: 'Isi Kepala',
+                feature3Desc: 'Tuangkan semua pikiran yang memenuhi kepalamu, satu per satu. Beban jadi terasa lebih ringan.',
+                feature4Title: 'Refleksi Diri',
+                feature4Desc: 'Catat hal menyakitkan dan alasan untuk bertahan. Ingatkan dirimu bahwa kamu kuat.',
+                feature5Title: 'Pesan untuk Diri',
+                feature5Desc: 'Tinggalkan pesan untuk dirimu sendiri. Afirmasi positif yang bisa kamu baca kapan saja.',
+                feature6Title: 'Salin Jurnal',
+                feature6Desc: 'Salin semua tulisanmu dengan satu klik. Simpan atau bagikan jika kamu mau.',
+                
+                // Values
+                valuesTitle: 'Nilai-nilai Kami',
+                value1Title: 'Privasi',
+                value1Desc: 'Semua tulisanmu disimpan di browsermu sendiri. Kami tidak melihat dan tidak bisa mengaksesnya.',
+                value2Title: 'Tanpa Penghakiman',
+                value2Desc: 'Tidak ada yang benar atau salah di sini. Ruang Pikiran adalah zona bebas penghakiman.',
+                value3Title: 'Kesehatan Mental',
+                value3Desc: 'Kami percaya bahwa menulis adalah langkah kecil untuk merawat kesehatan mental.',
+                value4Title: 'Akses untuk Semua',
+                value4Desc: 'Gratis dan akan selalu gratis. Kesehatan mental bukanlah hak istimewa.',
+                
+                // Timeline
+                timelineTitle: 'Perjalanan Kami',
+                timeline1Title: 'Ide Awal',
+                timeline1Desc: 'Berawal dari kebutuhan pribadi Husni untuk menuangkan pikiran di tengah kesibukan.',
+                timeline2Title: 'Prototype',
+                timeline2Desc: 'Dibuat dalam bentuk sederhana oleh Husni, hanya untuk penggunaan pribadi.',
+                timeline3Title: 'Pengembangan',
+                timeline3Desc: 'Menambahkan dukungan bahasa Inggris agar bisa diakses lebih luas.',
+                timeline4Title: 'Ruang Pikiran',
+                timeline4Desc: 'Terus berkembang dengan fitur-fitur baru yang ramah pengguna.',
+                
+                // Creator
+                creatorTitle: 'Pencipta',
+                creatorRole: 'Founder & Pengembang',
+                creatorBio: `
+                    <p>Husni adalah pengembang dan desainer di balik Ruang Pikiran. Berawal dari kebutuhan pribadi untuk menuangkan pikiran, ia menciptakan ruang yang hangat dan nyaman bagi siapa pun yang ingin merefleksikan diri melalui tulisan.</p>
+                    <p style="margin-top: 1rem;">Dengan latar belakang di bidang teknologi dan kepedulian terhadap kesehatan mental, Husni merancang aplikasi ini agar sederhana, intim, dan bebas penghakiman.</p>
+                `,
+                
+                // Contact
+                contactTitle: 'Hubungi Kami',
+                
+                // Footer
+                footerCopyright: 'Ruang Pikiran by Husni Aljalil. Hak cipta dilindungi.'
+            },
+            en: {
+                // Header
+                headerLogo: 'Mind Space',
+                navHome: 'Home',
+                navAbout: 'About',
+                navContact: 'Contact',
+                
+                // About page
+                aboutTitle: 'About Mind Space',
+                aboutSubtitle: 'A personal space to pour out thoughts, feelings, and daily reflections',
+                
+                // Story section
+                storyTitle: 'Our Story',
+                storyContent: `
+                    <p>Mind Space was born from a simple need: a safe place to pour out what's in your head. Amidst the busyness and hustle of life, we often forget to pause and listen to ourselves.</p>
+                    <p>This app was created as a warm and comfortable personal space where you can write your daily stories, pour out your heart, and leave messages for yourself. Without judgment, without pressure, just you and your thoughts.</p>
+                    <p>We believe that writing is a simple yet powerful form of therapy. By pouring out what's in your head, you can better understand yourself, release burdens, and find clarity in the midst of chaos.</p>
+                `,
+                
+                // Quote
+                quoteText: '"Writing is the best way to speak without being interrupted. Mind Space is where your voice is heard, by yourself."',
+                quoteAuthor: '— Husni Aljalil',
+                
+                // Features
+                featuresTitle: 'Key Features',
+                feature1Title: 'Daily Journal',
+                feature1Desc: 'Write your stories, experiences, and daily reflections freely. No limits, no rules.',
+                feature2Title: 'Track Mood',
+                feature2Desc: 'Record how you feel every day. Track emotional patterns and understand yourself better.',
+                feature3Title: 'Mind Dump',
+                feature3Desc: 'Pour out all the thoughts filling your head, one by one. The burden feels lighter.',
+                feature4Title: 'Self Reflection',
+                feature4Desc: 'Note painful things and reasons to survive. Remind yourself that you are strong.',
+                feature5Title: 'Message to Self',
+                feature5Desc: 'Leave a message for yourself. Positive affirmations you can read anytime.',
+                feature6Title: 'Copy Journal',
+                feature6Desc: 'Copy all your writing with one click. Save or share if you want.',
+                
+                // Values
+                valuesTitle: 'Our Values',
+                value1Title: 'Privacy',
+                value1Desc: 'All your writing is stored in your own browser. We don\'t see and can\'t access it.',
+                value2Title: 'No Judgment',
+                value2Desc: 'Nothing is right or wrong here. Mind Space is a judgment-free zone.',
+                value3Title: 'Mental Health',
+                value3Desc: 'We believe that writing is a small step to take care of mental health.',
+                value4Title: 'Access for All',
+                value4Desc: 'Free and always will be free. Mental health is not a privilege.',
+                
+                // Timeline
+                timelineTitle: 'Our Journey',
+                timeline1Title: 'Initial Idea',
+                timeline1Desc: 'Started from Husni\'s personal need to pour out thoughts amidst busyness.',
+                timeline2Title: 'Prototype',
+                timeline2Desc: 'Created in a simple form by Husni, only for personal use.',
+                timeline3Title: 'Development',
+                timeline3Desc: 'Added bilingual support to reach a wider audience.',
+                timeline4Title: 'Mind Space',
+                timeline4Desc: 'Continuously evolving with new user-friendly features.',
+                
+                // Creator
+                creatorTitle: 'Creator',
+                creatorRole: 'Founder & Developer',
+                creatorBio: `
+                    <p>Husni is the developer and designer behind Mind Space. Starting from a personal need to pour out thoughts, he created a warm and comfortable space for anyone who wants to reflect through writing.</p>
+                    <p style="margin-top: 1rem;">With a background in technology and a concern for mental health, Husni designed this app to be simple, intimate, and judgment-free.</p>
+                `,
+                
+                // Contact
+                contactTitle: 'Contact Us',
+                
+                // Footer
+                footerCopyright: 'Mind Space by Husni Aljalil. All rights reserved.'
+            }
+        };
+
+        // Language elements
+        const langID = document.getElementById('langID');
+        const langEN = document.getElementById('langEN');
+        let currentLang = 'id';
+
+        // Function to set language
+        function setLanguage(lang) {
+            currentLang = lang;
+            
+            // Update active button
+            langID.classList.toggle('active', lang === 'id');
+            langEN.classList.toggle('active', lang === 'en');
+            
+            const t = translations[lang];
+            
+            // Update header
+            document.getElementById('headerLogoText').textContent = t.headerLogo;
+            document.querySelectorAll('.nav-home-text').forEach(el => el.textContent = t.navHome);
+            document.querySelectorAll('.nav-about-text').forEach(el => el.textContent = t.navAbout);
+            document.querySelectorAll('.nav-contact-text').forEach(el => el.textContent = t.navContact);
+            
+            // Update about page
+            document.getElementById('aboutTitle').textContent = t.aboutTitle;
+            document.getElementById('aboutSubtitle').textContent = t.aboutSubtitle;
+            
+            // Story
+            document.getElementById('storyTitle').textContent = t.storyTitle;
+            document.getElementById('storyContent').innerHTML = t.storyContent;
+            
+            // Quote
+            document.getElementById('quoteText').textContent = t.quoteText;
+            document.getElementById('quoteAuthor').textContent = t.quoteAuthor;
+            
+            // Features
+            document.getElementById('featuresTitle').textContent = t.featuresTitle;
+            document.getElementById('feature1Title').textContent = t.feature1Title;
+            document.getElementById('feature1Desc').textContent = t.feature1Desc;
+            document.getElementById('feature2Title').textContent = t.feature2Title;
+            document.getElementById('feature2Desc').textContent = t.feature2Desc;
+            document.getElementById('feature3Title').textContent = t.feature3Title;
+            document.getElementById('feature3Desc').textContent = t.feature3Desc;
+            document.getElementById('feature4Title').textContent = t.feature4Title;
+            document.getElementById('feature4Desc').textContent = t.feature4Desc;
+            document.getElementById('feature5Title').textContent = t.feature5Title;
+            document.getElementById('feature5Desc').textContent = t.feature5Desc;
+            document.getElementById('feature6Title').textContent = t.feature6Title;
+            document.getElementById('feature6Desc').textContent = t.feature6Desc;
+            
+            // Values
+            document.getElementById('valuesTitle').textContent = t.valuesTitle;
+            document.getElementById('value1Title').textContent = t.value1Title;
+            document.getElementById('value1Desc').textContent = t.value1Desc;
+            document.getElementById('value2Title').textContent = t.value2Title;
+            document.getElementById('value2Desc').textContent = t.value2Desc;
+            document.getElementById('value3Title').textContent = t.value3Title;
+            document.getElementById('value3Desc').textContent = t.value3Desc;
+            document.getElementById('value4Title').textContent = t.value4Title;
+            document.getElementById('value4Desc').textContent = t.value4Desc;
+            
+            // Timeline
+            document.getElementById('timelineTitle').textContent = t.timelineTitle;
+            document.getElementById('timeline1Title').textContent = t.timeline1Title;
+            document.getElementById('timeline1Desc').textContent = t.timeline1Desc;
+            document.getElementById('timeline2Title').textContent = t.timeline2Title;
+            document.getElementById('timeline2Desc').textContent = t.timeline2Desc;
+            document.getElementById('timeline3Title').textContent = t.timeline3Title;
+            document.getElementById('timeline3Desc').textContent = t.timeline3Desc;
+            document.getElementById('timeline4Title').textContent = t.timeline4Title;
+            document.getElementById('timeline4Desc').textContent = t.timeline4Desc;
+            
+            // Creator
+            document.getElementById('creatorTitle').textContent = t.creatorTitle;
+            document.getElementById('creatorRole').textContent = t.creatorRole;
+            document.getElementById('creatorBio').innerHTML = t.creatorBio;
+            
+            // Contact
+            document.getElementById('contactTitle').textContent = t.contactTitle;
+            
+            // Footer
+            document.querySelectorAll('.footer-home-text').forEach(el => el.textContent = t.navHome);
+            document.querySelectorAll('.footer-about-text').forEach(el => el.textContent = t.navAbout);
+            document.querySelectorAll('.footer-contact-text').forEach(el => el.textContent = t.navContact);
+            document.getElementById('footerCopyright').textContent = t.footerCopyright;
+            
+            // Show toast notification
+            showToast(lang === 'id' ? 'Bahasa diubah ke Indonesia' : 'Language changed to English', 'success');
+        }
+
+        // Language button events
+        langID.addEventListener('click', () => setLanguage('id'));
+        langEN.addEventListener('click', () => setLanguage('en'));
+
+        // Load saved language preference
+        function loadLanguagePreference() {
+            const saved = localStorage.getItem('ruangPikiranLanguage');
+            if (saved && (saved === 'id' || saved === 'en')) {
+                setLanguage(saved);
+            } else {
+                setLanguage('id');
+            }
+        }
+
+        // Save language preference
+        function saveLanguagePreference(lang) {
+            localStorage.setItem('ruangPikiranLanguage', lang);
+        }
+
+        // Override setLanguage to save preference
+        const originalSetLanguage = setLanguage;
+        setLanguage = function(lang) {
+            originalSetLanguage(lang);
+            saveLanguagePreference(lang);
+        };
+
+        // Handle social media clicks (demo)
+        document.querySelectorAll('.social-icon, .contact-item[href="#"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                showToast(currentLang === 'id' ? 'Link akan segera aktif! (Demo)' : 'Link will be active soon! (Demo)', 'info');
+            });
+        });
+
+        // Initialize
+        window.addEventListener('load', loadLanguagePreference);
+    </script>
+</body>
+</html>
