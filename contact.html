@@ -726,6 +726,10 @@
                     <span class="material-symbols-outlined">contact_support</span>
                     Kontak
                 </a>
+                <a href="chatai.html" class="nav-link">
+                    <span class="material-symbols-outlined">chat</span>
+                    Chat AI
+                </a>
             </nav>
         </div>
     </header>
@@ -911,6 +915,26 @@
                             Tulisan otomatis tersimpan di browser. Gunakan tombol "copy jurnal" untuk menyimpan ke file atau membagikannya.
                         </div>
                     </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="material-symbols-outlined">help_outline</span>
+                            <span>Apa itu fitur Chat AI?</span>
+                        </div>
+                        <div class="faq-answer">
+                            Chat AI adalah teman virtual yang siap ngobrol kapan saja. Bisa bertanya tentang kesehatan mental, meminta saran, atau sekadar curhat.
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span class="material-symbols-outlined">help_outline</span>
+                            <span>Apakah Chat AI gratis?</span>
+                        </div>
+                        <div class="faq-answer">
+                            Ya, Chat AI gratis digunakan tanpa batasan. Kami menggunakan teknologi Gemini AI untuk memberikan respons yang membantu.
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -956,6 +980,10 @@
                 <a href="contact.html" class="footer-link">
                     <span class="material-symbols-outlined">contact_support</span>
                     Kontak
+                </a>
+                <a href="chatai.html" class="footer-link">
+                    <span class="material-symbols-outlined">chat</span>
+                    Chat AI
                 </a>
             </div>
 
@@ -1045,6 +1073,17 @@
                 }
             });
         });
+
+        // Set active nav based on current page
+        function setActiveNav() {
+            const currentPage = window.location.pathname.split('/').pop() || 'contact.html';
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                link.classList.toggle('active', href === currentPage);
+            });
+        }
+
+        setActiveNav();
     </script>
 </body>
 </html>

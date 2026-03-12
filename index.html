@@ -1067,6 +1067,10 @@
                     <span class="material-symbols-outlined">contact_support</span>
                     <span class="nav-contact-text">Kontak</span>
                 </a>
+                <a href="chatai.html" class="nav-link" id="navChatAI">
+                    <span class="material-symbols-outlined">chat</span>
+                    <span class="nav-chat-text">Chat AI</span>
+                </a>
             </nav>
         </div>
     </header>
@@ -1239,6 +1243,10 @@
                     <span class="material-symbols-outlined">contact_support</span>
                     <span class="footer-contact-text">Kontak</span>
                 </a>
+                <a href="chatai.html" class="footer-link" id="footerChatAI">
+                    <span class="material-symbols-outlined">chat</span>
+                    <span class="footer-chat-text">Chat AI</span>
+                </a>
             </div>
 
             <div class="footer-bottom">
@@ -1285,6 +1293,7 @@
                     navHome: 'Beranda',
                     navAbout: 'Tentang',
                     navContact: 'Kontak',
+                    navChat: 'Chat AI',
                     title: 'ruang pikiran',
                     dateLabel: 'Tanggal',
                     moodLabel: 'suasana hati',
@@ -1329,6 +1338,7 @@
                     navHome: 'Home',
                     navAbout: 'About',
                     navContact: 'Contact',
+                    navChat: 'Chat AI',
                     title: 'mind space',
                     dateLabel: 'Date',
                     moodLabel: 'mood',
@@ -1391,6 +1401,7 @@
                 document.querySelectorAll('.nav-home-text').forEach(el => el.textContent = translations[lang].navHome);
                 document.querySelectorAll('.nav-about-text').forEach(el => el.textContent = translations[lang].navAbout);
                 document.querySelectorAll('.nav-contact-text').forEach(el => el.textContent = translations[lang].navContact);
+                document.querySelectorAll('.nav-chat-text').forEach(el => el.textContent = translations[lang].navChat);
                 
                 document.getElementById('titleText').textContent = translations[lang].title;
                 document.querySelector('.date-label').textContent = translations[lang].dateLabel;
@@ -1427,6 +1438,7 @@
                 document.querySelectorAll('.footer-home-text').forEach(el => el.textContent = translations[lang].navHome);
                 document.querySelectorAll('.footer-about-text').forEach(el => el.textContent = translations[lang].navAbout);
                 document.querySelectorAll('.footer-contact-text').forEach(el => el.textContent = translations[lang].navContact);
+                document.querySelectorAll('.footer-chat-text').forEach(el => el.textContent = translations[lang].navChat);
                 document.getElementById('footerCopyright').textContent = translations[lang].footerCopyright;
                 
                 updatePreview();
@@ -1716,6 +1728,7 @@
                 localStorage.setItem('ruangPikiranData', JSON.stringify(data));
             }
 
+            // Override setLanguage to also save preference
             const originalSetLanguage = setLanguage;
             setLanguage = function(lang) {
                 originalSetLanguage(lang);
@@ -1731,8 +1744,37 @@
                 updatePreview();
             });
 
+            // Re-attach event listeners for language buttons
             langID.onclick = () => setLanguage('id');
             langEN.onclick = () => setLanguage('en');
+
+            // Auto-save to localStorage
+            function autoSave() {
+                const data = {
+                    tanggal: tanggalPicker.value,
+                    suasanaSelect: suasanaSelect.value,
+                    suasanaInput: suasanaInput.value,
+                    cerita: ceritaInput.value,
+                    bullet: getBulletValues(),
+                    sakit: sakitInput.value,
+                    bertahan: bertahanInput.value,
+                    pesan: pesanInput.value,
+                    language: currentLang
+                };
+                localStorage.setItem('ruangPikiranData', JSON.stringify(data));
+            }
+
+            // Auto-save every 5 seconds
+            setInterval(autoSave, 5000);
+
+            // Save on input
+            [tanggalPicker, suasanaSelect, suasanaInput, ceritaInput, sakitInput, bertahanInput, pesanInput].forEach(el => {
+                el.addEventListener('input', autoSave);
+            });
+
+            document.addEventListener('input', e => {
+                if (e.target.classList.contains('bullet-input')) autoSave();
+            });
         })();
     </script>
 </body>

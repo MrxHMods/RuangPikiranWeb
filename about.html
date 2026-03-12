@@ -672,6 +672,10 @@
                     <span class="material-symbols-outlined">contact_support</span>
                     Kontak
                 </a>
+                <a href="chatai.html" class="nav-link">
+                    <span class="material-symbols-outlined">chat</span>
+                    Chat AI
+                </a>
             </nav>
         </div>
     </header>
@@ -754,6 +758,14 @@
                         <h3>Salin Jurnal</h3>
                         <p>Salin semua tulisanmu dengan satu klik. Simpan atau bagikan jika kamu mau.</p>
                     </div>
+                    <!-- Fitur Chat AI -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-symbols-outlined">chat</span>
+                        </div>
+                        <h3>Chat dengan AI</h3>
+                        <p>Teman ngobrol virtual yang siap mendengarkan, memberi saran, atau sekadar menemani saat kamu butuh.</p>
+                    </div>
                 </div>
             </div>
 
@@ -824,7 +836,7 @@
                         <div class="timeline-dot"></div>
                         <div class="timeline-year">2026</div>
                         <div class="timeline-title">Ruang Pikiran</div>
-                        <div class="timeline-desc">Terus berkembang dengan fitur-fitur baru yang ramah pengguna.</div>
+                        <div class="timeline-desc">Terus berkembang dengan fitur-fitur baru, termasuk Chat AI yang ramah pengguna.</div>
                     </div>
                 </div>
             </div>
@@ -845,6 +857,7 @@
                         <div class="member-bio">
                             <p>Husni adalah pengembang dan desainer di balik Ruang Pikiran. Berawal dari kebutuhan pribadi untuk menuangkan pikiran, ia menciptakan ruang yang hangat dan nyaman bagi siapa pun yang ingin merefleksikan diri melalui tulisan.</p>
                             <p style="margin-top: 1rem;">Dengan latar belakang di bidang teknologi dan kepedulian terhadap kesehatan mental, Husni merancang aplikasi ini agar sederhana, intim, dan bebas penghakiman.</p>
+                            <p style="margin-top: 1rem;">Fitur Chat AI terbaru adalah bentuk komitmennya untuk terus menghadirkan teman virtual yang siap mendengarkan kapan pun dibutuhkan.</p>
                         </div>
                         <div class="member-social">
                             <a href="#" class="social-icon" aria-label="Email">
@@ -901,6 +914,10 @@
                     <span class="material-symbols-outlined">contact_support</span>
                     Kontak
                 </a>
+                <a href="chatai.html" class="footer-link">
+                    <span class="material-symbols-outlined">chat</span>
+                    Chat AI
+                </a>
             </div>
 
             <div class="footer-bottom">
@@ -953,6 +970,17 @@
                 showToast('Link akan segera aktif! (Demo)', 'info');
             });
         });
+
+        // Set active nav based on current page
+        function setActiveNav() {
+            const currentPage = window.location.pathname.split('/').pop() || 'about.html';
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                link.classList.toggle('active', href === currentPage);
+            });
+        }
+
+        setActiveNav();
     </script>
 </body>
 </html>
