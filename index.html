@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>🕯️ Ruang Pikiran • Jurnal Pribadi</title>
     
-    <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#f0e7df">
+    <!-- ========== PWA META TAGS ========== -->
+    <meta name="theme-color" content="#b27f62">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Ruang Pikiran">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="manifest" href="/manifest.json">
+    <meta name="application-name" content="Ruang Pikiran">
+    <meta name="msapplication-TileColor" content="#b27f62">
+    <meta name="msapplication-TileImage" content="/icons/ms-icon-144x144.png">
     
-    <!-- Icons for PWA -->
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
+    <!-- PWA Icons untuk semua platform -->
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23b27f62'/%3E%3Ctext x='50' y='70' text-anchor='middle' fill='white' font-size='48' font-family='Arial'%3E🕯️%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23b27f62'/%3E%3Ctext x='50' y='70' text-anchor='middle' fill='white' font-size='48' font-family='Arial'%3E🕯️%3C/text%3E%3C/svg%3E">
+    <link rel="manifest" href="manifest.json">
+    
+    <title>🕯️ Ruang Pikiran • Jurnal Pribadi</title>
     
     <!-- Google Fonts: Inter & Material Symbols -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1059,31 +1062,56 @@
         }
 
         /* PWA Install Button */
-        .install-pwa {
-            background: #85aa9b;
+        .install-pwa-btn {
+            background: #b27f62;
             color: white;
             border: none;
-            padding: 0.4rem 1rem;
             border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 500;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
-            cursor: pointer;
+            gap: 0.3rem;
             transition: 0.15s;
         }
-        
-        .install-pwa:hover {
-            background: #6f8f7e;
+
+        .install-pwa-btn:hover {
+            background: #9b6e53;
             transform: translateY(-2px);
         }
-        
-        @media (min-width: 768px) {
-            .install-pwa {
-                padding: 0.4rem 1.2rem;
-                font-size: 0.85rem;
-            }
+
+        .pwa-banner {
+            background: linear-gradient(135deg, #b27f62, #d4b9a8);
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 60px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pwa-banner-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .close-banner {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -1115,6 +1143,21 @@
             </nav>
         </div>
     </header>
+
+    <!-- PWA Install Banner -->
+    <div id="pwaBanner" class="pwa-banner" style="display: none;">
+        <div class="pwa-banner-text">
+            <span class="material-symbols-outlined">install_mobile</span>
+            <span id="installBannerText">Install Ruang Pikiran di layar utama untuk akses cepat</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <button id="installPwaBtn" class="install-pwa-btn">
+                <span class="material-symbols-outlined">download</span>
+                <span id="installBtnText">Install</span>
+            </button>
+            <button id="closeBannerBtn" class="close-banner">✕</button>
+        </div>
+    </div>
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
@@ -1299,584 +1342,436 @@
     </footer>
 
     <script>
-        (function() {
-            // ========== PWA INSTALL PROMPT ==========
-            let deferredPrompt;
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        // ========== PWA INSTALLATION ==========
+        let deferredPrompt;
+        let isPwaInstalled = false;
+        
+        // Check if already installed as PWA
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            isPwaInstalled = true;
+        }
+        
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
             
-            if (!isStandalone) {
-                const installBtn = document.createElement('button');
-                installBtn.className = 'install-pwa';
-                installBtn.innerHTML = '<span class="material-symbols-outlined">install_mobile</span> Install App';
-                const headerContainer = document.querySelector('.header-container');
-                if (headerContainer) {
-                    headerContainer.appendChild(installBtn);
-                }
-                
-                installBtn.style.display = 'none';
-                
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    installBtn.style.display = 'inline-flex';
-                    
-                    installBtn.addEventListener('click', async () => {
-                        installBtn.style.display = 'none';
-                        if (deferredPrompt) {
-                            deferredPrompt.prompt();
-                            const { outcome } = await deferredPrompt.userChoice;
-                            if (outcome === 'accepted') {
-                                showToast({
-                                    title: currentLang === 'id' ? 'Terima kasih!' : 'Thank you!',
-                                    message: currentLang === 'id' ? 'Aplikasi akan diinstall' : 'App will be installed',
-                                    type: 'success'
-                                });
-                            }
-                            deferredPrompt = null;
-                        }
-                    });
-                });
-                
-                window.addEventListener('appinstalled', () => {
+            // Show install banner if not installed
+            if (!isPwaInstalled) {
+                const banner = document.getElementById('pwaBanner');
+                if (banner) banner.style.display = 'flex';
+            }
+        });
+        
+        // Handle install button click
+        const installBtn = document.getElementById('installPwaBtn');
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        isPwaInstalled = true;
+                        document.getElementById('pwaBanner').style.display = 'none';
+                        showToast('Terima kasih telah menginstall Ruang Pikiran!', 'success');
+                    }
                     deferredPrompt = null;
-                    showToast({
-                        title: currentLang === 'id' ? 'Terinstall!' : 'Installed!',
-                        message: currentLang === 'id' ? 'Selamat menulis' : 'Happy journaling',
-                        type: 'success'
-                    });
-                });
-            }
-            
-            // ========== SERVICE WORKER REGISTRATION ==========
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(registration => {
-                            console.log('ServiceWorker registered');
-                        })
-                        .catch(err => {
-                            console.log('ServiceWorker registration failed: ', err);
-                        });
-                });
-            }
-            
-            // ========== ELEMEN ==========
-            const tanggalPicker = document.getElementById('tanggalPicker');
-            const jamRealtime = document.getElementById('jamRealtime');
-            const waktuInput = document.getElementById('waktuInput');
-            const suasanaSelect = document.getElementById('suasanaSelect');
-            const suasanaInput = document.getElementById('suasanaInput');
-            const ceritaInput = document.getElementById('ceritaInput');
-            const sakitInput = document.getElementById('sakitInput');
-            const bertahanInput = document.getElementById('bertahanInput');
-            const pesanInput = document.getElementById('pesanInput');
-            
-            const tambahBtn = document.getElementById('tambahBulletBtn');
-            const kurangBtn = document.getElementById('kurangBulletBtn');
-            const copyBtn = document.getElementById('copyBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            
-            const bulletContainer = document.getElementById('bulletContainer');
-            const previewContainer = document.getElementById('previewContainer');
-            const toastContainer = document.getElementById('toastContainer');
-
-            // Language elements
-            const langID = document.getElementById('langID');
-            const langEN = document.getElementById('langEN');
-            
-            // Current language state
-            let currentLang = 'id';
-
-            // ========== LANGUAGE TRANSLATIONS ==========
-            const translations = {
-                id: {
-                    headerLogo: 'Ruang Pikiran',
-                    navHome: 'Beranda',
-                    navAbout: 'Tentang',
-                    navContact: 'Kontak',
-                    navChat: 'Chat AI',
-                    title: 'ruang pikiran',
-                    dateLabel: 'Tanggal',
-                    moodLabel: 'suasana hati',
-                    selectPlaceholder: 'pilih',
-                    moodPlaceholder: 'atau tulis sendiri',
-                    storyLabel: 'cerita hari ini',
-                    storyPlaceholder: 'tulis bebas...',
-                    thoughtsLabel: 'isi kepalaku sekarang',
-                    addBtn: 'tambah',
-                    removeBtn: 'kurang',
-                    painfulLabel: 'menyakitkan',
-                    painfulPlaceholder: 'hal yang paling menyakitkan...',
-                    surviveLabel: 'bertahan karena',
-                    survivePlaceholder: 'hal kecil yang membuatku bertahan',
-                    messageLabel: 'pesan malam ini',
-                    messagePlaceholder: 'pesan untuk diriku sendiri...',
-                    copyText: 'copy jurnal',
-                    resetText: 'reset',
-                    previewTitle: 'live preview',
-                    realtimeText: 'real-time',
-                    footerText: 'yang tampil akan dicopy',
-                    footerCopyright: 'Ruang Pikiran. Hak cipta dilindungi.',
-                    moodOptions: {
-                        'tenang': 'tenang',
-                        'kosong': 'kosong',
-                        'sedih': 'sedih',
-                        'cemas': 'cemas',
-                        'marah': 'marah',
-                        'campur': 'campur'
-                    },
-                    toast: {
-                        copySuccess: 'Jurnal siap dibagikan',
-                        copyEmpty: 'Tidak ada isi yang disalin',
-                        copyFallback: 'Menggunakan mode fallback',
-                        copyError: 'Silakan copy manual',
-                        minBullet: 'Minimal satu baris isi kepala',
-                        resetSuccess: 'Semua tulisan telah dihapus'
-                    }
-                },
-                en: {
-                    headerLogo: 'Mind Space',
-                    navHome: 'Home',
-                    navAbout: 'About',
-                    navContact: 'Contact',
-                    navChat: 'Chat AI',
-                    title: 'mind space',
-                    dateLabel: 'Date',
-                    moodLabel: 'mood',
-                    selectPlaceholder: 'select',
-                    moodPlaceholder: 'or write your own',
-                    storyLabel: "today's story",
-                    storyPlaceholder: 'write freely...',
-                    thoughtsLabel: "what's on my mind",
-                    addBtn: 'add',
-                    removeBtn: 'remove',
-                    painfulLabel: 'painful',
-                    painfulPlaceholder: 'the most painful thing...',
-                    surviveLabel: 'survive because',
-                    survivePlaceholder: 'small thing that keeps me going',
-                    messageLabel: 'message to self',
-                    messagePlaceholder: 'message to myself...',
-                    copyText: 'copy journal',
-                    resetText: 'reset',
-                    previewTitle: 'live preview',
-                    realtimeText: 'real-time',
-                    footerText: 'what you see will be copied',
-                    footerCopyright: 'Mind Space. All rights reserved.',
-                    moodOptions: {
-                        'tenang': 'calm',
-                        'kosong': 'empty',
-                        'sedih': 'sad',
-                        'cemas': 'anxious',
-                        'marah': 'angry',
-                        'campur': 'mixed'
-                    },
-                    toast: {
-                        copySuccess: 'Journal ready to share',
-                        copyEmpty: 'Nothing to copy',
-                        copyFallback: 'Using fallback mode',
-                        copyError: 'Please copy manually',
-                        minBullet: 'Minimum one thought',
-                        resetSuccess: 'All entries cleared'
-                    }
-                }
-            };
-
-            // ========== SET ACTIVE NAV BASED ON CURRENT PAGE ==========
-            function setActiveNav() {
-                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    const href = link.getAttribute('href');
-                    link.classList.toggle('active', href === currentPage);
-                });
-            }
-
-            // ========== LANGUAGE SWITCHER ==========
-            function setLanguage(lang) {
-                currentLang = lang;
-                
-                langID.classList.toggle('active', lang === 'id');
-                langEN.classList.toggle('active', lang === 'en');
-                
-                // Update semua teks
-                document.getElementById('headerLogoText').textContent = translations[lang].headerLogo;
-                document.querySelectorAll('.nav-home-text').forEach(el => el.textContent = translations[lang].navHome);
-                document.querySelectorAll('.nav-about-text').forEach(el => el.textContent = translations[lang].navAbout);
-                document.querySelectorAll('.nav-contact-text').forEach(el => el.textContent = translations[lang].navContact);
-                document.querySelectorAll('.nav-chat-text').forEach(el => el.textContent = translations[lang].navChat);
-                
-                document.getElementById('titleText').textContent = translations[lang].title;
-                document.querySelector('.date-label').textContent = translations[lang].dateLabel;
-                document.querySelector('.mood-label').textContent = translations[lang].moodLabel;
-                document.querySelector('.select-placeholder').textContent = translations[lang].selectPlaceholder;
-                suasanaInput.placeholder = translations[lang].moodPlaceholder;
-                
-                // Update mood options
-                Array.from(suasanaSelect.options).forEach((opt, i) => {
-                    if (i > 0) opt.textContent = translations[lang].moodOptions[opt.value] || opt.value;
-                });
-                
-                document.querySelector('.story-label').textContent = translations[lang].storyLabel;
-                ceritaInput.placeholder = translations[lang].storyPlaceholder;
-                document.querySelector('.thoughts-label').textContent = translations[lang].thoughtsLabel;
-                document.querySelector('.add-btn').textContent = translations[lang].addBtn;
-                document.querySelector('.remove-btn').textContent = translations[lang].removeBtn;
-                
-                updateBulletPlaceholders(lang);
-                
-                document.querySelector('.painful-label').textContent = translations[lang].painfulLabel;
-                sakitInput.placeholder = translations[lang].painfulPlaceholder;
-                document.querySelector('.survive-label').textContent = translations[lang].surviveLabel;
-                bertahanInput.placeholder = translations[lang].survivePlaceholder;
-                document.querySelector('.message-label').textContent = translations[lang].messageLabel;
-                pesanInput.placeholder = translations[lang].messagePlaceholder;
-                
-                document.querySelector('.copy-text').textContent = translations[lang].copyText;
-                document.querySelector('.reset-text').textContent = translations[lang].resetText;
-                document.querySelector('.preview-title').textContent = translations[lang].previewTitle;
-                document.querySelector('.realtime-text').textContent = translations[lang].realtimeText;
-                document.querySelector('.footer-text').textContent = translations[lang].footerText;
-                
-                document.querySelectorAll('.footer-home-text').forEach(el => el.textContent = translations[lang].navHome);
-                document.querySelectorAll('.footer-about-text').forEach(el => el.textContent = translations[lang].navAbout);
-                document.querySelectorAll('.footer-contact-text').forEach(el => el.textContent = translations[lang].navContact);
-                document.querySelectorAll('.footer-chat-text').forEach(el => el.textContent = translations[lang].navChat);
-                document.getElementById('footerCopyright').textContent = translations[lang].footerCopyright;
-                
-                updatePreview();
-            }
-
-            function updateBulletPlaceholders(lang) {
-                document.querySelectorAll('.bullet-input').forEach((input, idx) => {
-                    input.placeholder = `${translations[lang].thoughtsLabel} ${idx+1}`;
-                });
-            }
-
-            langID.addEventListener('click', () => setLanguage('id'));
-            langEN.addEventListener('click', () => setLanguage('en'));
-
-            // ========== TOAST ==========
-            function showToast(options = {}) {
-                const {
-                    message = translations[currentLang].toast.copySuccess,
-                    title = currentLang === 'id' ? 'Berhasil' : 'Success',
-                    type = 'success',
-                    duration = 2000,
-                    icon = 'content_copy'
-                } = options;
-
-                const toast = document.createElement('div');
-                toast.className = `toast ${type}`;
-                
-                const iconMap = { success: 'check_circle', error: 'error', warning: 'warning' };
-                const iconName = iconMap[type] || icon;
-                
-                toast.innerHTML = `
-                    <div class="toast-icon"><span class="material-symbols-outlined">${iconName}</span></div>
-                    <div class="toast-content">
-                        <div class="toast-title">${title}</div>
-                        <div class="toast-message">${message}</div>
-                    </div>
-                    <div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
-                `;
-
-                toastContainer.appendChild(toast);
-                setTimeout(() => toast.classList.add('show'), 10);
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => toast.remove(), 300);
-                }, duration);
-            }
-
-            // ========== JAM REALTIME ==========
-            function updateClock() {
-                const now = new Date();
-                const jam = now.getHours().toString().padStart(2, '0');
-                const menit = now.getMinutes().toString().padStart(2, '0');
-                const detik = now.getSeconds().toString().padStart(2, '0');
-                jamRealtime.textContent = `${jam}:${menit}:${detik}`;
-                waktuInput.value = `${jam}:${menit} WIB`;
-                updatePreview();
-            }
-            setInterval(updateClock, 1000);
-            updateClock();
-
-            // ========== TANGGAL ==========
-            function setTodayDate() {
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = (today.getMonth() + 1).toString().padStart(2, '0');
-                const day = today.getDate().toString().padStart(2, '0');
-                tanggalPicker.value = `${year}-${month}-${day}`;
-                document.getElementById('copyrightYear').textContent = year;
-            }
-            setTodayDate();
-
-            // ========== BULLET ==========
-            function renderBulletItems(items = ['', '', '']) {
-                bulletContainer.innerHTML = ''; 
-                items.forEach((val, idx) => {
-                    const row = document.createElement('div');
-                    row.className = 'bullet-row';
-                    row.innerHTML = `
-                        <span class="bullet-sign">-</span>
-                        <input type="text" class="bullet-input" placeholder="${translations[currentLang].thoughtsLabel} ${idx+1}" value="${escapeHtml(val)}">
-                    `;
-                    bulletContainer.appendChild(row);
-                });
-            }
-
-            function escapeHtml(unsafe) {
-                return unsafe ? unsafe.replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m])) : unsafe;
-            }
-
-            function getBulletValues() {
-                return Array.from(document.querySelectorAll('.bullet-input')).map(inp => inp.value);
-            }
-
-            tambahBtn.addEventListener('click', () => {
-                const current = getBulletValues();
-                current.push('');
-                renderBulletItems(current);
-                updatePreview();
-            });
-
-            kurangBtn.addEventListener('click', () => {
-                const current = getBulletValues();
-                if (current.length > 1) {
-                    current.pop();
-                    renderBulletItems(current);
-                    updatePreview();
                 } else {
-                    showToast({
-                        title: currentLang === 'id' ? 'Tidak bisa hapus' : 'Cannot remove',
-                        message: translations[currentLang].toast.minBullet,
-                        type: 'warning',
-                        icon: 'warning'
-                    });
+                    showToast('Installasi tersedia melalui menu browser (Add to Home Screen)', 'info');
                 }
             });
-
-            renderBulletItems(['', '', '']);
-
-            // ========== FORMAT TANGGAL ==========
-            function formatTanggalIndonesia(val) {
-                if (!val) return '';
-                const [y, m, d] = val.split('-');
-                const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-                return `${parseInt(d)} ${bulan[parseInt(m)-1]} ${y}`;
+        }
+        
+        // Close banner
+        const closeBanner = document.getElementById('closeBannerBtn');
+        if (closeBanner) {
+            closeBanner.addEventListener('click', () => {
+                document.getElementById('pwaBanner').style.display = 'none';
+                localStorage.setItem('pwaBannerClosed', 'true');
+            });
+        }
+        
+        // Check if banner was closed before
+        if (localStorage.getItem('pwaBannerClosed') === 'true') {
+            const banner = document.getElementById('pwaBanner');
+            if (banner) banner.style.display = 'none';
+        }
+        
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+        
+        // ========== LANGUAGE TRANSLATIONS ==========
+        const translations = {
+            id: {
+                installBanner: 'Install Ruang Pikiran di layar utama untuk akses cepat',
+                installBtn: 'Install',
+                headerLogo: 'Ruang Pikiran',
+                navHome: 'Beranda',
+                navAbout: 'Tentang',
+                navContact: 'Kontak',
+                navChat: 'Chat AI',
+                title: 'ruang pikiran',
+                dateLabel: 'Tanggal',
+                moodLabel: 'suasana hati',
+                selectPlaceholder: 'pilih',
+                moodPlaceholder: 'atau tulis sendiri',
+                storyLabel: 'cerita hari ini',
+                storyPlaceholder: 'tulis bebas...',
+                thoughtsLabel: 'isi kepalaku sekarang',
+                addBtn: 'tambah',
+                removeBtn: 'kurang',
+                painfulLabel: 'menyakitkan',
+                painfulPlaceholder: 'hal yang paling menyakitkan...',
+                surviveLabel: 'bertahan karena',
+                survivePlaceholder: 'hal kecil yang membuatku bertahan',
+                messageLabel: 'pesan malam ini',
+                messagePlaceholder: 'pesan untuk diriku sendiri...',
+                copyText: 'copy jurnal',
+                resetText: 'reset',
+                previewTitle: 'live preview',
+                realtimeText: 'real-time',
+                footerText: 'yang tampil akan dicopy',
+                footerCopyright: 'Ruang Pikiran. Hak cipta dilindungi.'
+            },
+            en: {
+                installBanner: 'Install Ruang Pikiran on home screen for quick access',
+                installBtn: 'Install',
+                headerLogo: 'Mind Space',
+                navHome: 'Home',
+                navAbout: 'About',
+                navContact: 'Contact',
+                navChat: 'Chat AI',
+                title: 'mind space',
+                dateLabel: 'Date',
+                moodLabel: 'mood',
+                selectPlaceholder: 'select',
+                moodPlaceholder: 'or write your own',
+                storyLabel: "today's story",
+                storyPlaceholder: 'write freely...',
+                thoughtsLabel: "what's on my mind",
+                addBtn: 'add',
+                removeBtn: 'remove',
+                painfulLabel: 'painful',
+                painfulPlaceholder: 'the most painful thing...',
+                surviveLabel: 'survive because',
+                survivePlaceholder: 'small thing that keeps me going',
+                messageLabel: 'message to self',
+                messagePlaceholder: 'message to myself...',
+                copyText: 'copy journal',
+                resetText: 'reset',
+                previewTitle: 'live preview',
+                realtimeText: 'real-time',
+                footerText: 'what you see will be copied',
+                footerCopyright: 'Mind Space. All rights reserved.'
             }
-
-            function formatDateEnglish(val) {
-                if (!val) return '';
-                const [y, m, d] = val.split('-');
-                const bulan = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-                return `${bulan[parseInt(m)-1]} ${parseInt(d)}, ${y}`;
-            }
-
-            // ========== GENERATE TEKS ==========
-            function generateJurnalText() {
-                const tgl = tanggalPicker.value;
-                const tglFormatted = tgl ? (currentLang === 'id' ? formatTanggalIndonesia(tgl) : formatDateEnglish(tgl)) : (currentLang === 'id' ? '(tanggal tidak dipilih)' : '(date not selected)');
-                
-                const waktu = waktuInput.value || (currentLang === 'id' ? '--:-- WIB' : '--:-- WIB');
-                
-                let suasana = suasanaInput.value.trim();
-                if (!suasana && suasanaSelect.value) {
-                    suasana = currentLang === 'id' ? suasanaSelect.value : translations.en.moodOptions[suasanaSelect.value] || suasanaSelect.value;
-                }
-                if (!suasana) suasana = currentLang === 'id' ? '(tidak diisi)' : '(empty)';
-                
-                const cerita = ceritaInput.value.trim() || (currentLang === 'id' ? '(belum ada cerita)' : '(no story yet)');
-                const sakit = sakitInput.value.trim() || (currentLang === 'id' ? '(tidak diisi)' : '(empty)');
-                const bertahan = bertahanInput.value.trim() || (currentLang === 'id' ? '(tidak diisi)' : '(empty)');
-                const pesan = pesanInput.value.trim() || (currentLang === 'id' ? '(belum menulis pesan)' : '(no message)');
-                
-                const bulletValues = getBulletValues().filter(b => b.trim());
-                const bulletText = bulletValues.length ? bulletValues.map(b => `  - ${b}`).join('\n') : (currentLang === 'id' ? '  - (belum ada isi kepala)' : '  - (empty)');
-
-                return currentLang === 'id' 
-                    ? `🕯️ RUANG PIKIRAN\n\n📅 Tanggal  : ${tglFormatted}\n⏰ Waktu    : ${waktu}\n\n🌧️ Suasana hati : ${suasana}\n\n📖 Cerita hari ini :\n${cerita}\n\n🧠 Isi kepalaku sekarang :\n${bulletText}\n\n💔 Hal yang paling menyakitkan :\n${sakit}\n\n🌱 Hal kecil yang masih membuatku bertahan :\n${bertahan}\n\n🫂 Pesan untuk diriku sendiri malam ini :\n${pesan}\n\n— disalin dari ruang pikiran pribadi —`
-                    : `🕯️ MIND SPACE\n\n📅 Date     : ${tglFormatted}\n⏰ Time     : ${waktu}\n\n🌧️ Mood     : ${suasana}\n\n📖 Today's story :\n${cerita}\n\n🧠 What's on my mind :\n${bulletText}\n\n💔 Most painful thing :\n${sakit}\n\n🌱 Reason to survive :\n${bertahan}\n\n🫂 Message to myself :\n${pesan}\n\n— copied from personal mind space —`;
-            }
-
-            // ========== COPY ==========
-            async function copyJurnal() {
-                const text = generateJurnalText();
-                const hasContent = ceritaInput.value.trim() || getBulletValues().some(b => b.trim()) || sakitInput.value.trim() || bertahanInput.value.trim() || pesanInput.value.trim();
-                
-                try {
-                    await navigator.clipboard.writeText(text);
-                    showToast({
-                        title: currentLang === 'id' ? (hasContent ? 'Berhasil Disalin!' : 'Jurnal Kosong') : (hasContent ? 'Copied!' : 'Empty Journal'),
-                        message: translations[currentLang].toast[hasContent ? 'copySuccess' : 'copyEmpty'],
-                        type: hasContent ? 'success' : 'warning',
-                        icon: hasContent ? 'check_circle' : 'inbox'
-                    });
-                } catch {
-                    const ta = document.createElement('textarea');
-                    ta.value = text;
-                    document.body.appendChild(ta);
-                    ta.select();
-                    try {
-                        document.execCommand('copy');
-                        showToast({ title: currentLang === 'id' ? 'Berhasil' : 'Success', message: translations[currentLang].toast.copyFallback, type: 'success' });
-                    } catch {
-                        showToast({ title: currentLang === 'id' ? 'Gagal' : 'Failed', message: translations[currentLang].toast.copyError, type: 'error', icon: 'error' });
-                    }
-                    document.body.removeChild(ta);
-                }
-            }
-
-            copyBtn.addEventListener('click', copyJurnal);
-
-            // ========== PREVIEW ==========
-            function updatePreview() {
-                const tgl = tanggalPicker.value;
-                const tglFormatted = tgl ? (currentLang === 'id' ? formatTanggalIndonesia(tgl) : formatDateEnglish(tgl)) : `<span class="empty-state">${currentLang === 'id' ? '(pilih tanggal)' : '(select date)'}</span>`;
-                
-                const waktu = waktuInput.value || '<span class="empty-state">--:-- WIB</span>';
-                
-                let suasana = suasanaInput.value.trim();
-                if (!suasana && suasanaSelect.value) {
-                    suasana = currentLang === 'id' ? suasanaSelect.value : translations.en.moodOptions[suasanaSelect.value] || suasanaSelect.value;
-                }
-                if (!suasana) suasana = `<span class="empty-state">${currentLang === 'id' ? '(tidak diisi)' : '(empty)'}</span>`;
-                
-                const cerita = ceritaInput.value.trim() || `<span class="empty-state">${currentLang === 'id' ? '(belum ada cerita)' : '(no story)'}</span>`;
-                const sakit = sakitInput.value.trim() || '<span class="empty-state">—</span>';
-                const bertahan = bertahanInput.value.trim() || '<span class="empty-state">—</span>';
-                const pesan = pesanInput.value.trim() || `<span class="empty-state">${currentLang === 'id' ? '(belum menulis pesan)' : '(no message)'}</span>`;
-                
-                const bulletValues = getBulletValues().filter(b => b.trim());
-                const bulletHtml = bulletValues.length 
-                    ? '<ul class="preview-bullet">' + bulletValues.map(b => `<li>${escapeHtml(b)}</li>`).join('') + '</ul>'
-                    : `<span class="empty-state">${currentLang === 'id' ? '(belum ada isi kepala)' : '(empty)'}</span>`;
-
-                previewContainer.innerHTML = `
-                    <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">calendar_today</span> ${currentLang === 'id' ? 'tanggal' : 'date'}</div><div class="preview-text">${tglFormatted}</div></div>
-                    <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">schedule</span> ${currentLang === 'id' ? 'waktu' : 'time'}</div><div class="preview-text">${waktu}</div></div>
-                    <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">cloud</span> ${currentLang === 'id' ? 'suasana hati' : 'mood'}</div><div class="preview-text">${suasana}</div></div>
-                    <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">book</span> ${currentLang === 'id' ? 'cerita hari ini' : 'today\'s story'}</div><div class="preview-text">${cerita}</div></div>
-                    <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">psychology_alt</span> ${currentLang === 'id' ? 'isi kepala' : 'thoughts'}</div><div class="preview-text">${bulletHtml}</div></div>
-                    <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm icon-fill" style="color:#d47b6e;">favorite</span> ${currentLang === 'id' ? 'hal menyakitkan' : 'painful'}</div><div class="preview-text">${sakit}</div></div>
-                    <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">ecg_heart</span> ${currentLang === 'id' ? 'alasan bertahan' : 'reason to survive'}</div><div class="preview-text">${bertahan}</div></div>
-                    <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">self_improvement</span> ${currentLang === 'id' ? 'pesan untuk diri' : 'message to self'}</div><div class="preview-text">${pesan}</div></div>
+        };
+        
+        let currentLang = 'id';
+        
+        function updateLanguageUI(lang) {
+            const t = translations[lang];
+            document.getElementById('installBannerText').innerHTML = t.installBanner;
+            document.getElementById('installBtnText').innerHTML = t.installBtn;
+            document.getElementById('headerLogoText').innerHTML = t.headerLogo;
+            document.querySelectorAll('.nav-home-text').forEach(el => el.innerHTML = t.navHome);
+            document.querySelectorAll('.nav-about-text').forEach(el => el.innerHTML = t.navAbout);
+            document.querySelectorAll('.nav-contact-text').forEach(el => el.innerHTML = t.navContact);
+            document.querySelectorAll('.nav-chat-text').forEach(el => el.innerHTML = t.navChat);
+            document.getElementById('titleText').innerHTML = t.title;
+            document.querySelector('.date-label').innerHTML = t.dateLabel;
+            document.querySelector('.mood-label').innerHTML = t.moodLabel;
+            document.querySelector('.select-placeholder').innerHTML = t.selectPlaceholder;
+            document.getElementById('suasanaInput').placeholder = t.moodPlaceholder;
+            document.querySelector('.story-label').innerHTML = t.storyLabel;
+            document.getElementById('ceritaInput').placeholder = t.storyPlaceholder;
+            document.querySelector('.thoughts-label').innerHTML = t.thoughtsLabel;
+            document.querySelector('.add-btn').innerHTML = t.addBtn;
+            document.querySelector('.remove-btn').innerHTML = t.removeBtn;
+            document.querySelector('.painful-label').innerHTML = t.painfulLabel;
+            document.getElementById('sakitInput').placeholder = t.painfulPlaceholder;
+            document.querySelector('.survive-label').innerHTML = t.surviveLabel;
+            document.getElementById('bertahanInput').placeholder = t.survivePlaceholder;
+            document.querySelector('.message-label').innerHTML = t.messageLabel;
+            document.getElementById('pesanInput').placeholder = t.messagePlaceholder;
+            document.querySelector('.copy-text').innerHTML = t.copyText;
+            document.querySelector('.reset-text').innerHTML = t.resetText;
+            document.querySelector('.preview-title').innerHTML = t.previewTitle;
+            document.querySelector('.realtime-text').innerHTML = t.realtimeText;
+            document.querySelector('.footer-text').innerHTML = t.footerText;
+            document.querySelectorAll('.footer-home-text').forEach(el => el.innerHTML = t.navHome);
+            document.querySelectorAll('.footer-about-text').forEach(el => el.innerHTML = t.navAbout);
+            document.querySelectorAll('.footer-contact-text').forEach(el => el.innerHTML = t.navContact);
+            document.querySelectorAll('.footer-chat-text').forEach(el => el.innerHTML = t.navChat);
+            document.getElementById('footerCopyright').innerHTML = t.footerCopyright;
+        }
+        
+        function setLanguage(lang) {
+            currentLang = lang;
+            updateLanguageUI(lang);
+            document.getElementById('langID').classList.toggle('active', lang === 'id');
+            document.getElementById('langEN').classList.toggle('active', lang === 'en');
+            localStorage.setItem('preferredLanguage', lang);
+        }
+        
+        document.getElementById('langID').addEventListener('click', () => setLanguage('id'));
+        document.getElementById('langEN').addEventListener('click', () => setLanguage('en'));
+        
+        const savedLang = localStorage.getItem('preferredLanguage');
+        if (savedLang) setLanguage(savedLang);
+        else setLanguage('id');
+        
+        // ========== TOAST FUNCTION ==========
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icon = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info';
+            const title = type === 'success' ? (currentLang === 'id' ? 'Berhasil' : 'Success') : (currentLang === 'id' ? 'Info' : 'Info');
+            toast.innerHTML = `
+                <div class="toast-icon"><span class="material-symbols-outlined">${icon}</span></div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <div class="toast-progress"></div>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        // ========== JAM REALTIME ==========
+        function updateClock() {
+            const now = new Date();
+            const jam = now.getHours().toString().padStart(2, '0');
+            const menit = now.getMinutes().toString().padStart(2, '0');
+            const detik = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('jamRealtime').textContent = `${jam}:${menit}:${detik}`;
+            document.getElementById('waktuInput').value = `${jam}:${menit} WIB`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+        
+        // ========== TANGGAL ==========
+        function setTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const day = today.getDate().toString().padStart(2, '0');
+            document.getElementById('tanggalPicker').value = `${year}-${month}-${day}`;
+            document.getElementById('copyrightYear').textContent = year;
+        }
+        setTodayDate();
+        
+        // ========== BULLET LIST ==========
+        const bulletContainer = document.getElementById('bulletContainer');
+        
+        function renderBulletItems(items = ['', '', '']) {
+            bulletContainer.innerHTML = '';
+            items.forEach((val, idx) => {
+                const row = document.createElement('div');
+                row.className = 'bullet-row';
+                row.innerHTML = `
+                    <span class="bullet-sign">-</span>
+                    <input type="text" class="bullet-input" placeholder="${translations[currentLang].thoughtsLabel} ${idx+1}" value="${escapeHtml(val)}">
                 `;
+                bulletContainer.appendChild(row);
+            });
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        function getBulletValues() {
+            return Array.from(document.querySelectorAll('.bullet-input')).map(inp => inp.value);
+        }
+        
+        document.getElementById('tambahBulletBtn').addEventListener('click', () => {
+            const current = getBulletValues();
+            current.push('');
+            renderBulletItems(current);
+        });
+        
+        document.getElementById('kurangBulletBtn').addEventListener('click', () => {
+            const current = getBulletValues();
+            if (current.length > 1) {
+                current.pop();
+                renderBulletItems(current);
+            } else {
+                showToast(currentLang === 'id' ? 'Minimal satu baris' : 'Minimum one line', 'warning');
             }
-
-            // ========== EVENT LISTENER ==========
-            [tanggalPicker, suasanaSelect, suasanaInput, ceritaInput, sakitInput, bertahanInput, pesanInput].forEach(el => {
-                el.addEventListener('input', updatePreview);
-                el.addEventListener('change', updatePreview);
-            });
-
-            document.addEventListener('input', e => {
-                if (e.target.classList.contains('bullet-input')) updatePreview();
-            });
-
-            suasanaSelect.addEventListener('change', function() {
-                if (this.value) suasanaInput.value = this.value;
+        });
+        
+        renderBulletItems(['', '', '']);
+        
+        // ========== PREVIEW UPDATE ==========
+        function updatePreview() {
+            const previewContainer = document.getElementById('previewContainer');
+            const tgl = document.getElementById('tanggalPicker').value;
+            const waktu = document.getElementById('waktuInput').value || '--:-- WIB';
+            let suasana = document.getElementById('suasanaInput').value.trim();
+            if (!suasana && document.getElementById('suasanaSelect').value) {
+                suasana = document.getElementById('suasanaSelect').value;
+            }
+            if (!suasana) suasana = currentLang === 'id' ? '(tidak diisi)' : '(empty)';
+            const cerita = document.getElementById('ceritaInput').value.trim() || (currentLang === 'id' ? '(belum ada cerita)' : '(no story)');
+            const sakit = document.getElementById('sakitInput').value.trim() || '—';
+            const bertahan = document.getElementById('bertahanInput').value.trim() || '—';
+            const pesan = document.getElementById('pesanInput').value.trim() || (currentLang === 'id' ? '(belum menulis pesan)' : '(no message)');
+            const bulletValues = getBulletValues().filter(b => b.trim());
+            const bulletHtml = bulletValues.length ? '<ul class="preview-bullet">' + bulletValues.map(b => `<li>${escapeHtml(b)}</li>`).join('') + '</ul>' : `<span class="empty-state">${currentLang === 'id' ? '(belum ada isi kepala)' : '(empty)'}</span>`;
+            
+            previewContainer.innerHTML = `
+                <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">calendar_today</span> ${currentLang === 'id' ? 'tanggal' : 'date'}</div><div class="preview-text">${tgl || (currentLang === 'id' ? '(pilih tanggal)' : '(select date)')}</div></div>
+                <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">schedule</span> ${currentLang === 'id' ? 'waktu' : 'time'}</div><div class="preview-text">${waktu}</div></div>
+                <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">cloud</span> ${currentLang === 'id' ? 'suasana hati' : 'mood'}</div><div class="preview-text">${suasana}</div></div>
+                <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">book</span> ${currentLang === 'id' ? 'cerita hari ini' : 'today\'s story'}</div><div class="preview-text">${cerita}</div></div>
+                <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">psychology_alt</span> ${currentLang === 'id' ? 'isi kepala' : 'thoughts'}</div><div class="preview-text">${bulletHtml}</div></div>
+                <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm icon-fill" style="color:#d47b6e;">favorite</span> ${currentLang === 'id' ? 'hal menyakitkan' : 'painful'}</div><div class="preview-text">${sakit}</div></div>
+                <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">ecg_heart</span> ${currentLang === 'id' ? 'alasan bertahan' : 'reason to survive'}</div><div class="preview-text">${bertahan}</div></div>
+                <div class="preview-item"><div class="preview-label"><span class="material-symbols-outlined icon-sm">self_improvement</span> ${currentLang === 'id' ? 'pesan untuk diri' : 'message to self'}</div><div class="preview-text">${pesan}</div></div>
+            `;
+        }
+        
+        // Event listeners for preview update
+        document.getElementById('tanggalPicker').addEventListener('input', updatePreview);
+        document.getElementById('suasanaSelect').addEventListener('change', updatePreview);
+        document.getElementById('suasanaInput').addEventListener('input', updatePreview);
+        document.getElementById('ceritaInput').addEventListener('input', updatePreview);
+        document.getElementById('sakitInput').addEventListener('input', updatePreview);
+        document.getElementById('bertahanInput').addEventListener('input', updatePreview);
+        document.getElementById('pesanInput').addEventListener('input', updatePreview);
+        document.addEventListener('input', e => {
+            if (e.target.classList.contains('bullet-input')) updatePreview();
+        });
+        
+        // ========== COPY FUNCTION ==========
+        function generateJurnalText() {
+            const tgl = document.getElementById('tanggalPicker').value;
+            const waktu = document.getElementById('waktuInput').value || '--:-- WIB';
+            let suasana = document.getElementById('suasanaInput').value.trim();
+            if (!suasana && document.getElementById('suasanaSelect').value) {
+                suasana = document.getElementById('suasanaSelect').value;
+            }
+            if (!suasana) suasana = currentLang === 'id' ? '(tidak diisi)' : '(empty)';
+            const cerita = document.getElementById('ceritaInput').value.trim() || (currentLang === 'id' ? '(belum ada cerita)' : '(no story)');
+            const sakit = document.getElementById('sakitInput').value.trim() || (currentLang === 'id' ? '(tidak diisi)' : '(empty)');
+            const bertahan = document.getElementById('bertahanInput').value.trim() || (currentLang === 'id' ? '(tidak diisi)' : '(empty)');
+            const pesan = document.getElementById('pesanInput').value.trim() || (currentLang === 'id' ? '(belum menulis pesan)' : '(no message)');
+            const bulletValues = getBulletValues().filter(b => b.trim());
+            const bulletText = bulletValues.length ? bulletValues.map(b => `  - ${b}`).join('\n') : (currentLang === 'id' ? '  - (belum ada isi kepala)' : '  - (empty)');
+            
+            return currentLang === 'id' 
+                ? `🕯️ RUANG PIKIRAN\n\n📅 Tanggal  : ${tgl}\n⏰ Waktu    : ${waktu}\n\n🌧️ Suasana hati : ${suasana}\n\n📖 Cerita hari ini :\n${cerita}\n\n🧠 Isi kepalaku sekarang :\n${bulletText}\n\n💔 Hal yang paling menyakitkan :\n${sakit}\n\n🌱 Hal kecil yang masih membuatku bertahan :\n${bertahan}\n\n🫂 Pesan untuk diriku sendiri malam ini :\n${pesan}\n\n— disalin dari ruang pikiran pribadi —`
+                : `🕯️ MIND SPACE\n\n📅 Date     : ${tgl}\n⏰ Time     : ${waktu}\n\n🌧️ Mood     : ${suasana}\n\n📖 Today's story :\n${cerita}\n\n🧠 What's on my mind :\n${bulletText}\n\n💔 Most painful thing :\n${sakit}\n\n🌱 Reason to survive :\n${bertahan}\n\n🫂 Message to myself :\n${pesan}\n\n— copied from personal mind space —`;
+        }
+        
+        async function copyJurnal() {
+            const text = generateJurnalText();
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast(currentLang === 'id' ? 'Jurnal siap dibagikan' : 'Journal ready to share', 'success');
+            } catch {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast(currentLang === 'id' ? 'Jurnal disalin (fallback)' : 'Journal copied (fallback)', 'success');
+            }
+        }
+        
+        document.getElementById('copyBtn').addEventListener('click', copyJurnal);
+        
+        // ========== RESET FUNCTION ==========
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (confirm(currentLang === 'id' ? 'Hapus semua tulisan?' : 'Delete all entries?')) {
+                setTodayDate();
+                document.getElementById('suasanaSelect').value = '';
+                document.getElementById('suasanaInput').value = '';
+                document.getElementById('ceritaInput').value = '';
+                renderBulletItems(['', '', '']);
+                document.getElementById('sakitInput').value = '';
+                document.getElementById('bertahanInput').value = '';
+                document.getElementById('pesanInput').value = '';
                 updatePreview();
-            });
-
-            // ========== RESET ==========
-            function resetSemua() {
-                if (confirm(currentLang === 'id' ? 'Hapus semua tulisan?' : 'Delete all entries?')) {
-                    setTodayDate();
-                    suasanaSelect.value = '';
-                    suasanaInput.value = '';
-                    ceritaInput.value = '';
-                    renderBulletItems(['', '', '']);
-                    sakitInput.value = '';
-                    bertahanInput.value = '';
-                    pesanInput.value = '';
-                    updatePreview();
-                    showToast({
-                        title: currentLang === 'id' ? 'Jurnal Direset' : 'Journal Reset',
-                        message: translations[currentLang].toast.resetSuccess,
-                        type: 'warning',
-                        icon: 'restart_alt',
-                        duration: 1500
-                    });
-                }
+                showToast(currentLang === 'id' ? 'Semua tulisan telah dihapus' : 'All entries cleared', 'warning');
             }
-
-            resetBtn.addEventListener('click', resetSemua);
-
-            // ========== LOCAL STORAGE ==========
-            function muatDariStorage() {
-                const saved = localStorage.getItem('ruangPikiranData');
-                if (!saved) return;
+        });
+        
+        // ========== AUTO SAVE ==========
+        function autoSave() {
+            const data = {
+                tanggal: document.getElementById('tanggalPicker').value,
+                suasanaSelect: document.getElementById('suasanaSelect').value,
+                suasanaInput: document.getElementById('suasanaInput').value,
+                cerita: document.getElementById('ceritaInput').value,
+                bullet: getBulletValues(),
+                sakit: document.getElementById('sakitInput').value,
+                bertahan: document.getElementById('bertahanInput').value,
+                pesan: document.getElementById('pesanInput').value,
+                language: currentLang
+            };
+            localStorage.setItem('ruangPikiranData', JSON.stringify(data));
+        }
+        
+        function loadFromStorage() {
+            const saved = localStorage.getItem('ruangPikiranData');
+            if (saved) {
                 try {
                     const data = JSON.parse(saved);
-                    if (data.tanggal) tanggalPicker.value = data.tanggal;
-                    suasanaSelect.value = data.suasanaSelect || '';
-                    suasanaInput.value = data.suasanaInput || '';
-                    ceritaInput.value = data.cerita || '';
-                    if (data.bullet) renderBulletItems(data.bullet);
-                    sakitInput.value = data.sakit || '';
-                    bertahanInput.value = data.bertahan || '';
-                    pesanInput.value = data.pesan || '';
+                    if (data.tanggal) document.getElementById('tanggalPicker').value = data.tanggal;
+                    if (data.suasanaSelect) document.getElementById('suasanaSelect').value = data.suasanaSelect;
+                    if (data.suasanaInput) document.getElementById('suasanaInput').value = data.suasanaInput;
+                    if (data.cerita) document.getElementById('ceritaInput').value = data.cerita;
+                    if (data.bullet && data.bullet.length) renderBulletItems(data.bullet);
+                    if (data.sakit) document.getElementById('sakitInput').value = data.sakit;
+                    if (data.bertahan) document.getElementById('bertahanInput').value = data.bertahan;
+                    if (data.pesan) document.getElementById('pesanInput').value = data.pesan;
                     if (data.language) setLanguage(data.language);
-                    updatePreview();
-                } catch (e) {}
+                } catch(e) {}
             }
-
-            function saveLanguagePreference(lang) {
-                const saved = localStorage.getItem('ruangPikiranData');
-                const data = saved ? JSON.parse(saved) : {};
-                data.language = lang;
-                localStorage.setItem('ruangPikiranData', JSON.stringify(data));
-            }
-
-            // Override setLanguage to also save preference
-            const originalSetLanguage = setLanguage;
-            setLanguage = function(lang) {
-                originalSetLanguage(lang);
-                saveLanguagePreference(lang);
-            };
-
-            window.addEventListener('load', () => {
-                setActiveNav();
-                muatDariStorage();
-                if (!localStorage.getItem('ruangPikiranData') || !JSON.parse(localStorage.getItem('ruangPikiranData') || '{}').language) {
-                    setLanguage('id');
-                }
-                updatePreview();
+        }
+        
+        setInterval(autoSave, 3000);
+        document.querySelectorAll('#tanggalPicker, #suasanaSelect, #suasanaInput, #ceritaInput, #sakitInput, #bertahanInput, #pesanInput').forEach(el => {
+            el.addEventListener('input', autoSave);
+        });
+        document.addEventListener('input', e => {
+            if (e.target.classList.contains('bullet-input')) autoSave();
+        });
+        
+        loadFromStorage();
+        updatePreview();
+        
+        // ========== SET ACTIVE NAV ==========
+        function setActiveNav() {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                link.classList.toggle('active', href === currentPage);
             });
-
-            // Re-attach event listeners for language buttons
-            langID.onclick = () => setLanguage('id');
-            langEN.onclick = () => setLanguage('en');
-
-            // Auto-save to localStorage
-            function autoSave() {
-                const data = {
-                    tanggal: tanggalPicker.value,
-                    suasanaSelect: suasanaSelect.value,
-                    suasanaInput: suasanaInput.value,
-                    cerita: ceritaInput.value,
-                    bullet: getBulletValues(),
-                    sakit: sakitInput.value,
-                    bertahan: bertahanInput.value,
-                    pesan: pesanInput.value,
-                    language: currentLang
-                };
-                localStorage.setItem('ruangPikiranData', JSON.stringify(data));
-            }
-
-            // Auto-save every 5 seconds
-            setInterval(autoSave, 5000);
-
-            // Save on input
-            [tanggalPicker, suasanaSelect, suasanaInput, ceritaInput, sakitInput, bertahanInput, pesanInput].forEach(el => {
-                el.addEventListener('input', autoSave);
-            });
-
-            document.addEventListener('input', e => {
-                if (e.target.classList.contains('bullet-input')) autoSave();
-            });
-        })();
+        }
+        setActiveNav();
     </script>
 </body>
 </html>
