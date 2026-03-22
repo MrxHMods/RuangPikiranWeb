@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>🕯️ Ruang Pikiran • Jurnal Pribadi</title>
     
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#f0e7df">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ruang Pikiran">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Icons for PWA -->
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
+    
     <!-- Google Fonts: Inter & Material Symbols -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1044,6 +1057,34 @@
             flex-wrap: wrap;
             width: 100%;
         }
+
+        /* PWA Install Button */
+        .install-pwa {
+            background: #85aa9b;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        
+        .install-pwa:hover {
+            background: #6f8f7e;
+            transform: translateY(-2px);
+        }
+        
+        @media (min-width: 768px) {
+            .install-pwa {
+                padding: 0.4rem 1.2rem;
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1259,6 +1300,66 @@
 
     <script>
         (function() {
+            // ========== PWA INSTALL PROMPT ==========
+            let deferredPrompt;
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            
+            if (!isStandalone) {
+                const installBtn = document.createElement('button');
+                installBtn.className = 'install-pwa';
+                installBtn.innerHTML = '<span class="material-symbols-outlined">install_mobile</span> Install App';
+                const headerContainer = document.querySelector('.header-container');
+                if (headerContainer) {
+                    headerContainer.appendChild(installBtn);
+                }
+                
+                installBtn.style.display = 'none';
+                
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    installBtn.style.display = 'inline-flex';
+                    
+                    installBtn.addEventListener('click', async () => {
+                        installBtn.style.display = 'none';
+                        if (deferredPrompt) {
+                            deferredPrompt.prompt();
+                            const { outcome } = await deferredPrompt.userChoice;
+                            if (outcome === 'accepted') {
+                                showToast({
+                                    title: currentLang === 'id' ? 'Terima kasih!' : 'Thank you!',
+                                    message: currentLang === 'id' ? 'Aplikasi akan diinstall' : 'App will be installed',
+                                    type: 'success'
+                                });
+                            }
+                            deferredPrompt = null;
+                        }
+                    });
+                });
+                
+                window.addEventListener('appinstalled', () => {
+                    deferredPrompt = null;
+                    showToast({
+                        title: currentLang === 'id' ? 'Terinstall!' : 'Installed!',
+                        message: currentLang === 'id' ? 'Selamat menulis' : 'Happy journaling',
+                        type: 'success'
+                    });
+                });
+            }
+            
+            // ========== SERVICE WORKER REGISTRATION ==========
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => {
+                            console.log('ServiceWorker registered');
+                        })
+                        .catch(err => {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
+                });
+            }
+            
             // ========== ELEMEN ==========
             const tanggalPicker = document.getElementById('tanggalPicker');
             const jamRealtime = document.getElementById('jamRealtime');
